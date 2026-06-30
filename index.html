@@ -57,6 +57,12 @@
   .notfound .big{font-size:2.6rem;margin-bottom:8px;}
   .notfound .wa-link{display:inline-block;margin-top:14px;color:var(--wa-dark);font-weight:700;text-decoration:none;font-size:.88rem;}
   .notfound .wa-link:hover{text-decoration:underline;}
+  .preview{margin-top:20px;border-radius:14px;overflow:hidden;border:1px solid #f0e3eb;background:#faf5f8;box-shadow:0 6px 18px rgba(40,0,20,.12);}
+  .preview .ttl{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#fdf0f7;color:#9a6b81;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #f0e3eb;}
+  .preview .frame{position:relative;width:100%;aspect-ratio:1.414/1;background:#efe6ec;}
+  .preview iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .preview .ldr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#b07a93;font-size:.85rem;}
+  .preview .ldr .sp{width:26px;height:26px;border:3px solid #f0d6e4;border-top-color:var(--pink);border-radius:50%;animation:spin .8s linear infinite;}
   .hint{font-size:.78rem;opacity:.78;margin-top:16px;text-align:center;line-height:1.5;}
   footer{text-align:center;margin-top:42px;font-size:.78rem;opacity:.75;}
   .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-3px;margin-right:7px;}
@@ -144,6 +150,12 @@ const norm=s=>(s||'').toLowerCase().replace(/\s+/g,' ').trim();
 const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function render(h){resultEl.innerHTML=h;resultEl.classList.add('show');}
 function resetBtn(){btn.disabled=false;btn.textContent='Cek Sertifikat';}
+function drivePreview(link){
+  if(!link)return '';
+  var m=link.match(/\/d\/([a-zA-Z0-9_-]+)/)||link.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if(m)return 'https://drive.google.com/file/d/'+m[1]+'/preview';
+  return '';
+}
 async function cek(){
   const qRaw=input.value.trim();if(!qRaw){input.focus();return;}
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Memeriksa...';
@@ -153,11 +165,13 @@ async function cek(){
   const found=DATA.find(d=>norm(d.nama)===q||norm(d.nomor)===q)||DATA.find(d=>norm(d.nama).includes(q)||norm(d.nomor).includes(q));
   if(found){
     const ok=norm(found.status).includes('verif');
+    const prev=drivePreview(found.link);
     render('<div class="res-card '+(ok?'ok':'no')+'">'+
       '<span class="badge '+(ok?'ok':'no')+'">'+(ok?'\u2714 Terverifikasi':'\u2022 '+esc(found.status||'Terdaftar'))+'</span>'+
       '<div class="row"><span class="k">Nama Lengkap</span><span class="v">'+esc(found.nama)+'</span></div>'+
       '<div class="row"><span class="k">Nomor Sertifikat</span><span class="v">'+esc(found.nomor)+'</span></div>'+
       '<div class="row"><span class="k">Status</span><span class="v">'+esc(found.status||'-')+'</span></div>'+
+      (prev?'<div class="preview"><div class="ttl">\uD83C\uDFC5 Preview Sertifikat</div><div class="frame"><div class="ldr"><div class="sp"></div>Memuat sertifikat...</div><iframe src="'+prev+'" allow="autoplay" loading="lazy"></iframe></div></div>':'')+
       (found.link?'<a class="dl" href="'+esc(found.link)+'" target="_blank" rel="noopener">\uD83D\uDCC4 Lihat / Unduh Sertifikat</a>':'')+
     '</div>');
   }else{
