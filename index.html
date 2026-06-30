@@ -175,7 +175,7 @@ async function cek(){
       (found.link?'<a class="dl" href="'+esc(found.link)+'" target="_blank" rel="noopener">\uD83D\uDCC4 Lihat / Unduh Sertifikat</a>':'')+
     '</div>');
   }else{
-    render('<div class="res-card no"><div class="notfound"><div class="big">\uD83D\uDD0D</div><strong>Sertifikat tidak ditemukan.</strong><br><span style="font-size:.85rem;color:#9a6b81">Periksa kembali ejaan Nama atau Nomor Sertifikat Anda.</span><br><a class="wa-link" href="'+WA_URL+'" target="_blank" rel="noopener">\uD83D\uDCAC Hubungi Admin untuk bantuan</a></div></div>');
+    render('<div class="res-card no"><div class="notfound"><div class="big">\uD83D\uDD0D</div><strong>Tidak ada sertifikat valid yang sesuai.</strong><br><span style="font-size:.85rem;color:#9a6b81">Periksa kembali ejaan Nama atau Nomor Sertifikat Anda.</span><br><a class="wa-link" href="'+WA_URL+'" target="_blank" rel="noopener">\uD83D\uDCAC Hubungi Admin untuk bantuan</a></div></div>');
   }
   resetBtn();
 }
