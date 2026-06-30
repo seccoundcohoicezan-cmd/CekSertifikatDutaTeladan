@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cek Sertifikat — Duta Teladan by Universitas STEKOM</title>
+<style>
+  :root{
+    --pink:#e6147f;--pink-dark:#c10f6a;--pink-deep:#9c0a52;--ink:#2a0a1c;--white:#ffffff;--wa:#25D366;--wa-dark:#128C7E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh;color:var(--white);position:relative;overflow-x:hidden;background:var(--pink);}
+  .bg{position:fixed;inset:0;z-index:-3;background:radial-gradient(circle at 18% 22%, rgba(255,255,255,.12) 0 20%, transparent 21%),radial-gradient(circle at 92% 10%, rgba(0,0,0,.14) 0 5%, transparent 6%),linear-gradient(135deg,#e6147f 0%, #c10f6a 55%, #9c0a52 100%);}
+  .bg::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);}
+  .overlay{position:fixed;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(156,10,82,.10),rgba(42,10,28,.55));}
+  .particles{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;}
+  .particles span{position:absolute;display:block;color:rgba(255,255,255,.35);font-size:14px;animation:rise linear infinite;}
+  @keyframes rise{0%{transform:translateY(110vh) scale(.6) rotate(0);opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{transform:translateY(-10vh) scale(1.1) rotate(220deg);opacity:0;}}
+  .wrap{max-width:680px;margin:0 auto;padding:48px 20px 90px;}
+  header{text-align:center;margin-bottom:34px;animation:drop .7s ease both;}
+  @keyframes drop{from{opacity:0;transform:translateY(-18px);}to{opacity:1;transform:none;}}
+  .eyebrow{letter-spacing:.35em;text-transform:uppercase;font-size:.72rem;font-weight:600;opacity:.9;margin-bottom:8px;}
+  .logo{font-size:clamp(2rem,7vw,3.1rem);font-weight:800;line-height:1;text-transform:uppercase;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:.16em;text-shadow:0 4px 18px rgba(0,0,0,.25);}
+  .logo .star{display:inline-block;color:#fff;animation:twinkle 2.4s ease-in-out infinite;}
+  @keyframes twinkle{0%,100%{transform:scale(1) rotate(0);filter:drop-shadow(0 0 4px rgba(255,255,255,.5));}50%{transform:scale(1.18) rotate(18deg);filter:drop-shadow(0 0 14px rgba(255,255,255,.95));}}
+  .sub{margin-top:10px;font-size:1rem;font-weight:600;opacity:.95;}
+  .card{background:rgba(255,255,255,.13);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.25);border-radius:24px;padding:32px 26px;box-shadow:0 24px 60px rgba(60,0,30,.40);animation:drop .7s .12s ease both;}
+  .card h2{font-size:1.2rem;font-weight:700;margin-bottom:6px;}
+  .card p.lead{font-size:.9rem;opacity:.9;margin-bottom:22px;line-height:1.5;}
+  label{display:block;font-size:.8rem;font-weight:600;margin-bottom:8px;opacity:.95;}
+  .inwrap{position:relative;}
+  .inwrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.55;}
+  input{width:100%;padding:15px 16px 15px 44px;border-radius:14px;border:none;font-size:1rem;color:var(--ink);background:#fff;outline:none;box-shadow:0 4px 14px rgba(0,0,0,.12);transition:.2s;}
+  input:focus{box-shadow:0 0 0 3px rgba(255,255,255,.55),0 6px 18px rgba(0,0,0,.18);}
+  input::placeholder{color:#b07a93;}
+  button.cek{width:100%;margin-top:18px;padding:16px;border:none;border-radius:14px;background:var(--ink);color:#fff;font-size:1.02rem;font-weight:700;cursor:pointer;transition:.2s;letter-spacing:.02em;box-shadow:0 8px 22px rgba(0,0,0,.28);}
+  button.cek:hover{background:#000;transform:translateY(-2px);box-shadow:0 12px 26px rgba(0,0,0,.34);}
+  button.cek:active{transform:translateY(0);}
+  button.cek:disabled{opacity:.6;cursor:wait;transform:none;}
+  .result{margin-top:24px;display:none;}
+  .result.show{display:block;animation:fade .45s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  .res-card{border-radius:20px;padding:26px;background:#fff;color:var(--ink);box-shadow:0 16px 40px rgba(40,0,20,.3);position:relative;overflow:hidden;}
+  .res-card.ok::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#10803f,#39c97a);}
+  .res-card.no::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#c0392b,#e57373);}
+  .badge{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:18px;}
+  .badge.ok{background:#e7f8ee;color:#10803f;}
+  .badge.no{background:#fdeaea;color:#c0392b;}
+  .row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #f0e3eb;font-size:.93rem;}
+  .row:last-of-type{border-bottom:none;}
+  .row .k{color:#9a6b81;font-weight:600;}
+  .row .v{font-weight:700;text-align:right;word-break:break-word;}
+  .dl{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;padding:14px;background:var(--pink);color:#fff;border-radius:13px;text-decoration:none;font-weight:700;transition:.2s;box-shadow:0 6px 16px rgba(230,20,127,.4);}
+  .dl:hover{background:var(--pink-dark);transform:translateY(-2px);}
+  .notfound{text-align:center;padding:8px 0;}
+  .notfound .big{font-size:2.6rem;margin-bottom:8px;}
+  .notfound .wa-link{display:inline-block;margin-top:14px;color:var(--wa-dark);font-weight:700;text-decoration:none;font-size:.88rem;}
+  .notfound .wa-link:hover{text-decoration:underline;}
+  .hint{font-size:.78rem;opacity:.78;margin-top:16px;text-align:center;line-height:1.5;}
+  footer{text-align:center;margin-top:42px;font-size:.78rem;opacity:.75;}
+  .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-3px;margin-right:7px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .wa-fab{position:fixed;right:22px;bottom:22px;width:62px;height:62px;border-radius:50%;background:var(--wa);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:50;box-shadow:0 8px 24px rgba(18,140,126,.5);animation:pop .5s .6s both;}
+  @keyframes pop{from{transform:scale(0);}to{transform:scale(1);}}
+  .wa-fab::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--wa);z-index:-1;animation:pulse 2s ease-out infinite;}
+  @keyframes pulse{0%{transform:scale(1);opacity:.6;}100%{transform:scale(1.8);opacity:0;}}
+  .wa-fab svg{width:34px;height:34px;}
+  .wa-fab:hover{transform:scale(1.08);transition:.2s;}
+  .wa-pop{position:fixed;right:22px;bottom:96px;width:300px;max-width:calc(100vw - 44px);background:#fff;color:var(--ink);border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.35);z-index:51;overflow:hidden;transform:translateY(20px) scale(.92);opacity:0;pointer-events:none;transition:.25s cubic-bezier(.2,.8,.3,1);}
+  .wa-pop.show{transform:translateY(0) scale(1);opacity:1;pointer-events:auto;}
+  .wa-pop .top{background:var(--wa-dark);color:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px;position:relative;}
+  .wa-pop .top .av{width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .wa-pop .top .av svg{width:26px;height:26px;}
+  .wa-pop .top .t{font-weight:700;font-size:.95rem;line-height:1.2;}
+  .wa-pop .top .s{font-size:.72rem;opacity:.85;}
+  .wa-pop .body{padding:18px;}
+  .wa-pop .bubble{background:#f3eef1;border-radius:4px 14px 14px 14px;padding:12px 14px;font-size:.88rem;line-height:1.5;color:#4a3340;}
+  .wa-pop .go{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;padding:13px;background:var(--wa);color:#fff;border-radius:12px;text-decoration:none;font-weight:700;font-size:.92rem;transition:.2s;}
+  .wa-pop .go:hover{background:var(--wa-dark);}
+  .wa-pop .close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.25);border:none;color:#fff;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px;line-height:1;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="overlay"></div>
+<div class="particles" id="particles"></div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Build Your Character</div>
+    <div class="logo">Duta&nbsp;Telad<span class="star">&#9733;</span>n</div>
+    <div class="sub">By Universitas STEKOM</div>
+  </header>
+
+  <div class="card">
+    <h2>Cek Keaslian Sertifikat</h2>
+    <p class="lead">Masukkan <strong>Nama Lengkap</strong> atau <strong>Nomor Sertifikat</strong> untuk memverifikasi keaslian sertifikat Anda secara real-time.</p>
+    <label for="q">Nama Lengkap / Nomor Sertifikat</label>
+    <div class="inwrap">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b07a93" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q" type="text" placeholder="Masukan Nama / Nomor Sertifikat Anda" autocomplete="off">
+    </div>
+    <button class="cek" id="btn">Cek Sertifikat</button>
+    <div class="result" id="result"></div>
+    <p class="hint">Pengecekan hanya dapat dilakukan menggunakan Nama atau Nomor Sertifikat yang terdaftar.</p>
+  </div>
+
+  <footer>&copy; 2026 Duta Teladan — Universitas STEKOM &middot; Sistem Verifikasi Sertifikat</footer>
+</div>
+
+<div class="wa-pop" id="waPop">
+  <div class="top">
+    <div class="av"><svg viewBox="0 0 24 24" fill="#25D366"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.978-1.045z"/></svg></div>
+    <div>
+      <div class="t">Admin Duta Teladan</div>
+      <div class="s">&#9679; Online &middot; Biasanya membalas cepat</div>
+    </div>
+    <button class="close" id="waClose">&times;</button>
+  </div>
+  <div class="body">
+    <div class="bubble">Halo! &#128075; Ada kendala saat cek sertifikat atau butuh bantuan lain? Tim admin siap membantu Anda.</div>
+    <a class="go" href="https://api.whatsapp.com/send/?phone=628888555591&text=Saya%20butuh%20bantuan" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24z"/></svg>
+      Chat via WhatsApp
+    </a>
+  </div>
+</div>
+
+<div class="wa-fab" id="waFab" title="Butuh bantuan?">
+  <svg viewBox="0 0 24 24" fill="#fff"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.978-1.045zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+</div>
+
+<script>
+const SHEET_ID="1i05fJr3r7EfRS6yJWVH7rWPadZr9vko-GFNEVc6weRs";
+const CSV_URL="https://docs.google.com/spreadsheets/d/"+SHEET_ID+"/gviz/tq?tqx=out:csv&sheet=Sheet1";
+const WA_URL="https://api.whatsapp.com/send/?phone=628888555591&text=Saya%20butuh%20bantuan";
+const btn=document.getElementById('btn'),input=document.getElementById('q'),resultEl=document.getElementById('result');
+let DATA=[];
+(function(){const p=document.getElementById('particles');const ch=['\u2605','\u2726','\u2727','\u00B7'];for(let i=0;i<22;i++){const s=document.createElement('span');s.textContent=ch[i%ch.length];s.style.left=Math.random()*100+'%';s.style.fontSize=(8+Math.random()*16)+'px';s.style.animationDuration=(9+Math.random()*12)+'s';s.style.animationDelay=(-Math.random()*15)+'s';p.appendChild(s);}})();
+function parseCSV(t){const rows=[];let row=[],cur='',q=false;for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=c;}else{if(c==='"')q=true;else if(c===','){row.push(cur);cur='';}else if(c==='\n'){row.push(cur);rows.push(row);row=[];cur='';}else if(c==='\r'){}else cur+=c;}}if(cur!==''||row.length){row.push(cur);rows.push(row);}return rows;}
+async function loadData(){try{const r=await fetch(CSV_URL);const txt=await r.text();const rows=parseCSV(txt).filter(x=>x.join('').trim()!=='');rows.shift();DATA=rows.map(r=>({no:(r[0]||'').trim(),nama:(r[1]||'').trim(),nomor:(r[2]||'').trim(),link:(r[3]||'').trim(),status:(r[4]||'').trim()})).filter(d=>d.nama||d.nomor);}catch(e){DATA=null;}}
+const norm=s=>(s||'').toLowerCase().replace(/\s+/g,' ').trim();
+const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function render(h){resultEl.innerHTML=h;resultEl.classList.add('show');}
+function resetBtn(){btn.disabled=false;btn.textContent='Cek Sertifikat';}
+async function cek(){
+  const qRaw=input.value.trim();if(!qRaw){input.focus();return;}
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Memeriksa...';
+  if(DATA===null||DATA.length===0)await loadData();
+  if(DATA===null){render('<div class="res-card no"><div class="notfound"><div class="big">\u26A0\uFE0F</div><strong>Tidak dapat terhubung ke data.</strong><br><span style="font-size:.85rem;color:#9a6b81">Pastikan akses spreadsheet "Anyone with the link" lalu coba lagi.</span></div></div>');resetBtn();return;}
+  const q=norm(qRaw);
+  const found=DATA.find(d=>norm(d.nama)===q||norm(d.nomor)===q)||DATA.find(d=>norm(d.nama).includes(q)||norm(d.nomor).includes(q));
+  if(found){
+    const ok=norm(found.status).includes('verif');
+    render('<div class="res-card '+(ok?'ok':'no')+'">'+
+      '<span class="badge '+(ok?'ok':'no')+'">'+(ok?'\u2714 Terverifikasi':'\u2022 '+esc(found.status||'Terdaftar'))+'</span>'+
+      '<div class="row"><span class="k">Nama Lengkap</span><span class="v">'+esc(found.nama)+'</span></div>'+
+      '<div class="row"><span class="k">Nomor Sertifikat</span><span class="v">'+esc(found.nomor)+'</span></div>'+
+      '<div class="row"><span class="k">Status</span><span class="v">'+esc(found.status||'-')+'</span></div>'+
+      (found.link?'<a class="dl" href="'+esc(found.link)+'" target="_blank" rel="noopener">\uD83D\uDCC4 Lihat / Unduh Sertifikat</a>':'')+
+    '</div>');
+  }else{
+    render('<div class="res-card no"><div class="notfound"><div class="big">\uD83D\uDD0D</div><strong>Sertifikat tidak ditemukan.</strong><br><span style="font-size:.85rem;color:#9a6b81">Periksa kembali ejaan Nama atau Nomor Sertifikat Anda.</span><br><a class="wa-link" href="'+WA_URL+'" target="_blank" rel="noopener">\uD83D\uDCAC Hubungi Admin untuk bantuan</a></div></div>');
+  }
+  resetBtn();
+}
+btn.addEventListener('click',cek);
+input.addEventListener('keydown',e=>{if(e.key==='Enter')cek();});
+loadData();
+const fab=document.getElementById('waFab'),pop=document.getElementById('waPop'),waClose=document.getElementById('waClose');
+fab.addEventListener('click',()=>pop.classList.toggle('show'));
+waClose.addEventListener('click',()=>pop.classList.remove('show'));
+setTimeout(()=>pop.classList.add('show'),2600);
+setTimeout(()=>{if(pop.classList.contains('show'))pop.classList.remove('show');},8500);
+</script>
+</body>
+</html>
